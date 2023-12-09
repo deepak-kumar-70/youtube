@@ -1,0 +1,18 @@
+export const CategoriesItem = [
+    "All",
+    "Web Development",
+    "TypeScript",
+    "Object Oriented Programming",
+    "Programming",
+    "Weight Lifting",
+    "Pubg",
+    "Gupta ji",
+    "React",
+    "Next.js",
+    "Functional ",
+    "Frontend Web Development",
+    "Backend Web Development",
+    "Hiking",
+    "Coding",
+    "JavaScript",
+  ]
