@@ -35,7 +35,7 @@ export const videosData = [
       views: 222536,
       postedAt:'2months ago',
       duration: 7887,
-      thumbnailUrl: "https://i.ytimg.com/vi/Xj-pFysiPL8/hqdefault.jpg?sqp=-oaymwExCOADEI4CSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYfyBDKBMwDw==&rs=AOn4CLCZgKwEJ1a82TlmkCLcazz4LpVkIw",
+      thumbnailUrl: "https://i.ytimg.com/vi/t7wSjy9Lv-o/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDPyjrzCfmlZ1mgvgHi4-20jkzqGw",
       videoUrl:
       passori,
       category:['Song','Music','Passori','passori new song']

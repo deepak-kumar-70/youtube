@@ -17,7 +17,10 @@ const HeaderFirstSection = (props) => {
     <div className="flex items-center">
       <span
         onClick={handleSliderbar}
-        className="flex items-center justify-center mr-4 text-lg font-thin cursor-pointer w-9 h-9 rounded-full hover:bg-neutral-200 p-2"
+        className="md:flex items-center justify-center mr-4 text-lg 
+        font-thin cursor-pointer w-9 h-9
+        hidden 
+         rounded-full hover:bg-neutral-200 p-2"
       >
         <SlMenu className="text-2xl" />
       </span>

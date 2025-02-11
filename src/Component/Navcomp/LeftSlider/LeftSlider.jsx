@@ -46,7 +46,7 @@ const LeftSlider = () => {
         setSelectedTab(tab);
       };
   return (
-    <div className="sticky top-0 overflow-y-auto scrollbar-hidden pb-4 flex flex-col ml-1">
+    <div className="sticky top-0 overflow-y-auto scrollbar-hidden pb-4 md:flex flex-col ml-1 hidden">
     <div className=" border-b-slate-200 border-b-2  mr-5 text-[14px] cursor-pointer">
     <Link to='/'>
       <div   className={`flex px-3 py-2 items-center w-[200px] rounded-xl hover:bg-neutral-200 ${

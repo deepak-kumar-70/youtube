@@ -6,26 +6,9 @@ import { RiVideoUploadLine } from "react-icons/ri";
 import { BsBell } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
 import { RiVideoUploadFill } from "react-icons/ri";
-import { motion } from "framer-motion";
-import { AiOutlinePlaySquare } from "react-icons/ai";
-import { IoCreateOutline } from "react-icons/io5";
-import { IoRadioOutline } from "react-icons/io5";
-// Profile
-import { FaGoogle } from "react-icons/fa";
-import { PiUserRectangleLight } from "react-icons/pi";
-import { CiLogin } from "react-icons/ci";
-import { SiYoutubestudio } from "react-icons/si";
-import { ImCoinDollar } from "react-icons/im";
-import { RiShieldUserLine } from "react-icons/ri";
-import { IoMoonOutline } from "react-icons/io5";
-import { MdOutlineTranslate } from "react-icons/md";
-import { IoShieldOutline } from "react-icons/io5";
-import { BsGlobe2 } from "react-icons/bs";
-import { FaRegKeyboard } from "react-icons/fa6";
-import { IoSettingsOutline } from "react-icons/io5";
-import { FaRegCircleQuestion } from "react-icons/fa6";
-import { MdOutlineFeedback } from "react-icons/md";
-import { IoIosArrowForward } from "react-icons/io";
+import { FaRegUserCircle } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
+
 import "../../css/animation.css";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -34,9 +17,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { videosData } from "../../Data/videoData";
 import { useDispatch } from "react-redux";
-import { handleIsSlide, handleIsVideoSlide, handleSpeech } from "../../Redux/Slices/ShortIndexSlice/ShortSlice";
+import {
+  handleIsUpload,
+  handleSpeech,
+} from "../../Redux/Slices/ShortIndexSlice/ShortSlice";
 import { useSelector } from "react-redux";
 import HeaderFirstSection from "../../Component/Navcomp/Headerfirstsection/HeaderFirstSection";
+import Upload from "../../Component/Navcomp/Upload/Upload";
+import Profile from "../../Component/Navcomp/Profile/Profile";
+import Notification from "../../Component/Navcomp/Notification/Notification";
 const Navbar = () => {
   const {
     transcript,
@@ -44,14 +33,16 @@ const Navbar = () => {
 
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
-  const [isUpload, setUpload] = useState(false);
+  // const [isUpload, setUpload] = useState(false);
   const [isProfile, setProfile] = useState(false);
-  const[searchVal,setSearchVal]=useState('')
-  const [showSearchBox,setShoeSearchBox]=useState(false)
- 
-  const dispatch=useDispatch()
-  const isSpeechShow=useSelector((state)=>state.isSpeechShow)
-  const isSlide=useSelector((state)=>state.isSlide)
+  const [searchVal, setSearchVal] = useState("");
+  const [showSearchBox, setShoeSearchBox] = useState(false);
+  const [isnotification,setNotification]=useState(false)
+  const dispatch = useDispatch();
+  const isSpeechShow = useSelector((state) => state.isSpeechShow);
+  const isSlide = useSelector((state) => state.isSlide);
+  const isUpload = useSelector((state) => state.isUploade);
+  const loginstatus = useSelector((state) => state.loginStatus);
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser support speech recognition.</span>;
   }
@@ -70,32 +61,29 @@ const Navbar = () => {
       },
     },
   };
-  
+
   const handleShowSpeech = () => {
     if (isSpeechShow) {
       SpeechRecognition.stopListening();
     } else {
       SpeechRecognition.startListening();
     }
-    dispatch(handleSpeech(!isSpeechShow))
-    if(transcript){
-      setSearchVal(transcript)
+    dispatch(handleSpeech(!isSpeechShow));
+    if (transcript) {
+      setSearchVal(transcript);
     }
   };
-  const handleShowSearchBox=()=>{
-    setShoeSearchBox(!showSearchBox)
-  }
-   const filteredVideos = videosData.filter((val) => {
+  const handleShowSearchBox = () => {
+    setShoeSearchBox(!showSearchBox);
+  };
+  const filteredVideos = videosData.filter((val) => {
     if (!searchVal) {
       return true;
     } else {
-    
       return (
         val.category &&
         val.category.some(
-          (cat) =>
-            cat &&
-            cat.toLowerCase().startsWith(searchVal.toLowerCase())
+          (cat) => cat && cat.toLowerCase().startsWith(searchVal.toLowerCase())
         )
       );
     }
@@ -103,53 +91,49 @@ const Navbar = () => {
   // const handleSlideVideo=()=>{
   //   dispatch(handleIsVideoSlide())
   // }
- 
+
   return (
-    <div className="flex justify-between px-10 md:py-5 py-[30px]  relative">
-    <div className="md:block hidden">
-    <HeaderFirstSection/>
-    </div>
-    
-      <div className="flex items-center">
-        <div className="flex flex-grow w-[600px] relative ">
+    <div className="flex justify-between md:px-10 px-3  max-w-full w-full md:py-5 py-[20px]  relative">
+      <HeaderFirstSection />
+
+      <div className="md:flex items-center hidden">
+        <div className="flex  flex-grow md:w-[600px]  relative ">
           <input
             type="search"
             value={searchVal}
-            onChange={(e)=>(setSearchVal(e.target.value))}
+            onChange={(e) => setSearchVal(e.target.value)}
             placeholder="search"
             onClick={handleShowSearchBox}
-            className="rounded-l-full border   border-neutral-400 shadow-inner shadow-neutral-100 py-1 px-4 text-lg w-full focus:border-blue-500 outline-none"
+            className="rounded-l-full border  
+             border-neutral-400 shadow-inner shadow-neutral-100 py-1 px-4 text-lg w-full
+              focus:border-blue-500 outline-none"
           />
-          {
-            (showSearchBox || searchVal !== '') &&
-           
-              <div  className="w-[90%] bg-white shadow shadow-neutral-700 h-[60vh] top-10 rounded-xl absolute z-50 py-7 ">
-                
-              
-             { filteredVideos.slice(0,9).map((item,index)=>(
-                  <ul key={index}>
+          {(showSearchBox || searchVal !== "") && (
+            <div className="w-[90%] bg-white shadow shadow-neutral-700 h-[60vh] top-10 rounded-xl absolute z-50 py-7 ">
+              {filteredVideos.slice(0, 9).map((item, index) => (
+                <ul key={index}>
                   <li className="hover:bg-neutral-200 cursor-pointer flex py-2">
-                  <span>
-                    <IoIosSearch className="text-2xl text-neutral-700 font-medium ml-3 mr-3" />
-                  </span>
-                  <span className="font-medium text-sm">{item.category.join(' ')}</span>
-                </li>
+                    <span>
+                      <IoIosSearch className="text-2xl text-neutral-700 font-medium ml-3 mr-3" />
+                    </span>
+                    <span className="font-medium text-sm">
+                      {item.category.join(" ")}
+                    </span>
+                  </li>
                 </ul>
-                ))
-             
-              }
-                 
-                
-              </div>
-          
-          }
-          
-         <Link
-          to='/searchpage'
-          className="flex items-center justify-center py-1 bg-neutral-100 px-4 rounded-r-full border-neutral-400 border border-l-0 flex-shrink-0 hover:bg-neutral-200 cursor-pointer"
-          > <span>
-            <IoIosSearch className="text-2xl" />
-          </span></Link>
+              ))}
+            </div>
+          )}
+
+          <Link
+            to="/searchpage"
+            className="flex items-center justify-center py-1 bg-neutral-100 px-4 rounded-r-full border-neutral-400 border border-l-0 flex-shrink-0 hover:bg-neutral-200 cursor-pointer"
+          >
+            {" "}
+            <span>
+              <IoIosSearch className="text-2xl" />
+            </span>
+          </Link>
         </div>
         <div
           onClick={handleShowSpeech}
@@ -203,214 +187,66 @@ const Navbar = () => {
           </div>
         ) : null}
       </div>
-      <div className="flex items-center">
-        <div
-          onClick={() => setUpload(!isUpload)}
-          className="flex items-center relative justify-center mr-6 text-lg font-thin cursor-pointer w-9 h-9 rounded-full hover:bg-neutral-200 p-2"
-        >
-          {isUpload ? (
-            <RiVideoUploadFill className="text-2xl" />
-          ) : (
-            <RiVideoUploadLine className="text-2xl " />
-          )}
-        </div>
-        {isUpload && (
-          <motion.div className="absolute top-[75%]  right-3  py-3 bg-white shadow-sm shadow-slate-600 rounded-xl z-50">
-            <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200">
-              <span>
-                <AiOutlinePlaySquare className="text-2xl mr-7" />
-              </span>
-              <span>Your Video</span>
-            </div>
-            <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200">
-              <span>
-                <IoRadioOutline className="text-2xl mr-7" />
-              </span>
-              <span>Go live</span>
-            </div>
-            <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200">
-              <span>
-                <IoCreateOutline className="text-2xl mr-7" />
-              </span>
-              <span>Create post</span>
-            </div>
-          </motion.div>
-        )}
-        <div className="flex items-center justify-center mr-6 text-lg font-thin cursor-pointer w-9 h-9 rounded-full hover:bg-neutral-200 p-2">
-          <BsBell className="text-2xl" />
-        </div>
-        <div onClick={() => setProfile(!isProfile)}>
-          <img
-            src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"
-            className="w-[40px] h-[40px] cursor-pointer rounded-full"
-          />
-        </div>
-        {isProfile && (
-          <motion.div
-            initial={{ opacity: "0" }}
-            animate={{ opacity: "1", x: "-100px" }}
-            transition={{
-            
-              type:'spring',
-             stiffness:120
-          }}
-            className="absolute top-[38%] w-[20vw]  right-3  py-3 bg-white shadow-sm shadow-slate-600 rounded-xl z-50"
+      {loginstatus ? (
+        <div className="flex items-center ">
+          <div
+            onClick={() => dispatch(handleIsUpload())}
+            className="md:flex items-center hidden relative justify-center mr-6 text-lg font-thin cursor-pointer w-9 h-9 rounded-full hover:bg-neutral-200 p-2"
           >
-            <div className="px-5 flex border-b-neutral-200 border-b-2 py-2">
-              <div>
-                <img
-                  src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"
-                  className="w-[50px] h-[50px] cursor-pointer rounded-full mr-2"
-                />
-              </div>
-              <div>
-                <p>GuptaJi</p>
-                <p className="mb-2">GuptaJi@gmail.com</p>
-                <Link to="#" className="text-blue-800 mt-6">
-                  View channnel detail
-                </Link>
-              </div>
-            </div>
-            <div className="overflow-y-auto h-[76vh] ">
-            <div className=" border-b-neutral-200 border-b-2 py-2">
-             <Link to=''> <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-                <span>
-                  <FaGoogle className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-                </span>
-                <span>Google Account</span>
-              </div>
-              </Link>
-              <Link to=''>
-              <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-                <span>
-                  <PiUserRectangleLight className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-                </span>
-                <span>Switch Account</span>
-                <span className="text-2xl ml-auto">
-                  <IoIosArrowForward />
-                </span>
-              </div>
-              </Link>
-              <Link to=''>
-              <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-                <span>
-                  <CiLogin className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-                </span>
-                <span>Sign out</span>
-              </div>
-              </Link>
-            </div>
-            <div className=" border-b-neutral-200 border-b-2 py-2">
-            <Link to=''>
-            <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-              <span>
-                <SiYoutubestudio className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-              </span>
-              <span>DevTube Studio</span>
-            </div>
-            </Link>
-            <Link to=''>
-            <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-              <span>
-                <ImCoinDollar className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-              </span>
-              <span>Purchess and memberships</span>
-            </div>
-            </Link>
+            {isUpload ? (
+              <RiVideoUploadFill className="text-2xl" />
+            ) : (
+              <RiVideoUploadLine className="text-2xl " />
+            )}
           </div>
-          <div className=" border-b-neutral-200 border-b-2 py-2">
-          <Link to=''> <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-             <span>
-               <RiShieldUserLine className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-             </span>
-             <span>Your data In DevTube</span>
-           </div>
-           </Link>
-           <Link to=''>
-           <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-             <span>
-               <IoMoonOutline className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-             </span>
-             <span>Apperance:Device Theme</span>
-             <span className="text-2xl ml-auto">
-               <IoIosArrowForward />
-             </span>
-           </div>
-           </Link>
-           <Link to=''>
-           <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-             <span>
-               <MdOutlineTranslate className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-             </span>
-             <span>Language:British English</span>
-             <span className="text-2xl ml-auto">
-               <IoIosArrowForward />
-             </span>
-           </div>
-           </Link>
-           <Link to=''>
-           <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-             <span>
-               <IoShieldOutline className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-             </span>
-             <span>Restricted Mode:off</span>
-             <span className="text-2xl ml-auto">
-               <IoIosArrowForward />
-             </span>
-           </div>
-           </Link>
-           <Link to=''>
-           <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-             <span>
-               <BsGlobe2 className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-             </span>
-             <span>Location:India</span>
-             <span className="text-2xl ml-auto">
-               <IoIosArrowForward />
-             </span>
-           </div>
-           </Link>
-           <Link to=''> <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-           <span>
-             <FaRegKeyboard className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-           </span>
-           <span>Keyboard shortcut</span>
-         </div>
-         </Link>
-         </div>
-         <div className=" border-b-neutral-200 border-b-2 py-2">
-         <Link to=''>
-         <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-           <span>
-             <IoSettingsOutline  className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-           </span>
-           <span>Setting</span>
-         </div>
-         </Link>
-        
-       </div>
-       <div className=" border-b-neutral-200 border-b-2 py-2">
-       <Link to=''>
-       <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-         <span>
-           <FaRegCircleQuestion className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-         </span>
-         <span>Help</span>
-       </div>
-       </Link>
-       <Link to=''>
-       <div className="flex  py-2 items-center w-[100%] px-5  hover:bg-neutral-200 cursor-pointer">
-         <span>
-           <MdOutlineFeedback className="text-xl mr-7 text-[rgba(0,0,0,0.9)]" />
-         </span>
-         <span>send Feedback</span>
-       </div>
-       </Link>
-     </div>
+          {isUpload && <Upload />}
+          <span className="md:hidden flex items-center justify-center  cursor-pointer">
+            <IoIosSearch className="text-2xl text-neutral-700 font-medium ml-3 mr-3" />
+          </span>
+          <div 
+          onClick={()=>setNotification(!isnotification)}
+          className="flex items-center justify-center mr-6 text-lg font-thin cursor-pointer w-9 h-9 rounded-full hover:bg-neutral-200 p-2">
+            <BsBell className="text-2xl" />
+          </div>
+          {
+            isnotification&& <Notification/>
+          }
+          <div
+            className="md:flex flex-shrink-0 hidden"
+            onClick={() => setProfile(!isProfile)}
+          >
+            <img
+              src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"
+              className="w-[40px]  h-[40px] cursor-pointer  rounded-full"
+            />
+          </div>
+          {isProfile && <Profile />}
+        </div>
+      ) : (
+        <div className="flex items-center ">
+          <div className="flex items-center justify-center mr-3 text-lg font-thin cursor-pointer w-9 h-9 rounded-full hover:bg-neutral-200 p-2">
+            <button onClick={() => setProfile(!isProfile)}>
+              <BsThreeDotsVertical />
+            </button>
+          </div>
+          {
+            isProfile&&
+            <div className="absolute inset-0 top-[80%]">
+            <Profile/>
             </div>
-          </motion.div>
-        )}
-      </div>
+           
+          }
+        <Link to="/Login">  <div className="flex items-center gap-2 text-blue-700 border border-neutral-400 px-2 py-1 rounded-2xl hover:bg-blue-100 cursor-pointer">
+            <span className="text-xl">
+              <FaRegUserCircle />
+            </span>
+            <span>
+              <Link to="/Login">Sign in</Link>
+            </span>
+          </div>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

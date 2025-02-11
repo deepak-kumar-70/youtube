@@ -14,16 +14,79 @@ import History from "./Component/Sidebarpages/History/History";
 import WatchLater from "./Component/Sidebarpages/WatchLater/WatchLater";
 import LikedVideo from "./Component/Sidebarpages/LikedVideo/LikedVideo";
 import { useSelector } from "react-redux";
+import AuthForm from "./Component/Auth/Login/Login";
+import HomeLoader from "./Component/Loader/HomeLoader";
+import { motion } from "framer-motion";
+import Loader from "./Component/Loader/Loader";
+import Resisters from "./Component/Auth/Resister/Resisters";
+import { useDispatch } from "react-redux";
+import { handleLoginStatus } from "./Redux/Slices/ShortIndexSlice/ShortSlice";
+import { useEffect } from "react";
 function App() {
   const isSpeechShow = useSelector((state) => state.isSpeechShow);
+  const isUploadPage = useSelector((state) => state.isUploadPage);
+  const dispatch = useDispatch();
+  const loginStatus = useSelector((state) => state.loginStatus);
+  const LoginsStatus=()=>{
+    const storedToken = localStorage.getItem('token');
+            console.log(storedToken,'store token')
+            if(!storedToken){
+                dispatch(handleLoginStatus(false))
+            }else{
+              dispatch(handleLoginStatus(true))
+            }
+           
+  }
+  useEffect(()=>{
+    LoginsStatus()
+  },[loginStatus])
   return (
-    <div className="w-[100%] min-h-screen relative">
-    {isSpeechShow && (
-      <div className="absolute w-full h-full bg-black opacity-50 top-0 left-0 z-40" />
-    )}
+    <div className="w-full min-h-screen relative">
+      {isSpeechShow && (
+        <div className="absolute w-full h-full bg-black opacity-50 top-0 left-0 z-40" />
+      )}
+      {isUploadPage && (
+        <div className="absolute w-full h-full bg-black opacity-50 top-0 left-0 z-40" />
+      )}
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route
+            exact
+            path="/"
+            element={
+              <div className="">
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center h-screen w-full bg-black"
+                  initial={{ opacity: 1 }}
+                  animate={{
+                    opacity: 0,
+                    display:'none'
+                  }}
+                  transition={{
+                    delay: 2,
+                    duration: 0.2,
+                  }}
+                >
+              <Loader/>
+                </motion.div>
+                <div>
+                  <motion.div
+                    className="relative"
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    transition={{
+                      delay: 2,
+                      duration: 0.2,
+                    }}
+                  >
+                    <Home />
+                  </motion.div>
+                </div>
+              </div>
+            }
+          />
           <Route
             exact
             path="/shorts"
@@ -47,10 +110,10 @@ function App() {
             path="/searchpage"
             element={
               <div className="max-h-screen flex flex-col">
-                <Navbar />
-                
+              <Navbar />
+
                 <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
-                <Sliderbar />
+                  <Sliderbar />
                   <div className="overflow-x-hidden px-8 pb-4">
                     <div className="overflow-x-hidden px-8 pb-4">
                       <div className={`sticky top-0 z-10 pb-4 `}>
@@ -80,20 +143,20 @@ function App() {
               </div>
             }
           />
-         
+
           <Route
             exact
             path="/watchlater"
             element={
               <div className="max-h-screen flex flex-col">
-              <Navbar />
-              <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
-                <Sliderbar />
-                <div className="overflow-x-hidden px-8 pb-4">
-                <WatchLater/>
+                <Navbar />
+                <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
+                  <Sliderbar />
+                  <div className="overflow-x-hidden px-8 pb-4">
+                    <WatchLater />
+                  </div>
                 </div>
               </div>
-            </div>
             }
           />
           <Route
@@ -101,14 +164,14 @@ function App() {
             path="/LikedVideo"
             element={
               <div className="max-h-screen flex flex-col">
-              <Navbar />
-              <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
-                <Sliderbar />
-                <div className="overflow-x-hidden px-8 pb-4">
-               <LikedVideo/>
+                <Navbar />
+                <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
+                  <Sliderbar />
+                  <div className="overflow-x-hidden px-8 pb-4">
+                    <LikedVideo />
+                  </div>
                 </div>
               </div>
-            </div>
             }
           />
           <Route
@@ -116,34 +179,33 @@ function App() {
             path="/history"
             element={
               <div className="max-h-screen flex flex-col">
-              <Navbar />
-              <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
-                <Sliderbar />
-                <div className="overflow-x-hidden px-8 pb-4">
-                <History/>
+                <Navbar />
+                <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
+                  <Sliderbar />
+                  <div className="overflow-x-hidden px-8 pb-4">
+                    <History />
+                  </div>
                 </div>
               </div>
-            </div>
-              
-             }
+            }
           />
           <Route
             exact
             path="/subscription"
             element={
               <div className="max-h-screen flex flex-col">
-              <Navbar />
-              <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
-                <Sliderbar />
-                <div className="overflow-x-hidden px-8 pb-4">
-                <Subsription/>
+                <Navbar />
+                <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto ">
+                  <Sliderbar />
+                  <div className="overflow-x-hidden px-8 pb-4">
+                    <Subsription />
+                  </div>
                 </div>
               </div>
-            </div>
-              
-             }
+            }
           />
-          
+          <Route exact path="/Login" element={<AuthForm />} />
+          <Route exact path="/Resister" element={<Resisters/>} />
         </Routes>
       </BrowserRouter>
     </div>

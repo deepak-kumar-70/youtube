@@ -10,13 +10,21 @@ import { useState } from "react";
 import { videosData } from "../../Data/videoData";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
 import VideosComp from "../Navcomp/VideosComp/VideosComp";
+import VideoComments from "../Navcomp/Comments/VideoComments";
+import Description from "../Comp/Description/Description";
+import PlayButton from "../Comp/Buttons/PlayButton";
+import PauseButton from "../Comp/Buttons/PauseButton";
 const Videopages = () => {
     const[sliderIndex,setSliderIndex]=useState(videosData[0].videoUrl)
+    const[playVideo,setPlayVideo]=useState(true)
+    const videoRef = useRef(null);
     const homeIndex=useSelector((state)=>state.homeVideoIndex)
     console.log(homeIndex,'hoem')
     const newVideoId=videosData.find(objId=>objId?.id===homeIndex)
     console.log(newVideoId)
+
   useEffect(()=>{
     if(newVideoId==null){
       setSliderIndex(videosData[0].videoUrl)
@@ -28,23 +36,51 @@ const Videopages = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
   },[newVideoId])
  
-     
-   
+  const handleDownload = () => {
+    const videoElement = videoRef.current;
+    const a = document.createElement('a');
+    a.href = videoElement.src;
+    a.download = 'downloaded_video.mp4';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Share Video",
+          text: "Check out this video!",
+          url: window.location.href,
+        });
+      } else {
+        alert("Share functionality is not supported on this browser.");
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
    
   return (
     <div className="flex items-center justify-center ">
-      <div className="w-[85%] flex">
+      <div className="w-[85%] flex flex-col sm:flex-row">
         <div className="mr-10">
           <div className="cursor-pointer w-[55vw] h-[70vh] rounded-2xl  bg-neutral-900">
             <video
               src={sliderIndex}
               title="YouTube Video"
-              autoPlay={true}
-              muted={true}
-            controls
-              className={`block object-cover h-full w-full inset-0 transition-all duration-2000   rounded-2xl`}
+              ref={videoRef}
+              autoPlay={playVideo}
+              muted={false}
+              controls
+              className={`relative block object-cover h-full w-full inset-0 transition-all duration-2000   rounded-2xl`}
+              onClick={()=>setPlayVideo(!playVideo)}
             />
-
+              {
+                playVideo ?
+                <div  onClick={()=>setPlayVideo(!playVideo)} className="absolute z-50 top-[30%] left-[33%]"><PlayButton/></div>:
+                <div  onClick={()=>setPlayVideo(!playVideo)} className="absolute z-50 top-[30%] left-[33%]"><PauseButton/></div>
+              } 
             <div className="">
               <div className="flex flex-col flex-wrap ">
                 <Link href="#" className="font-bold w-[55vw] mt-3">
@@ -94,14 +130,16 @@ const Videopages = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center ml-2  hover:bg-neutral-200  py-1 px-3 rounded-full  bg-neutral-100">
+                    <div 
+                    onClick={handleShare}
+                    className="flex items-center ml-2  hover:bg-neutral-200  py-1 px-3 rounded-full  bg-neutral-100">
                       <span>
                         {" "}
                         <RiShareForwardLine className="text-2xl mr-2" />
                       </span>
                       <span>share</span>
                     </div>
-                    <div className="flex items-center ml-2  hover:bg-neutral-200  py-1 px-3 rounded-full  bg-neutral-100">
+                    <div onClick={handleDownload} className="flex items-center ml-2  hover:bg-neutral-200  py-1 px-3 rounded-full  bg-neutral-100">
                       <span>
                         {" "}
                         <LiaDownloadSolid className="text-2xl mr-2" />
@@ -118,15 +156,10 @@ const Videopages = () => {
                 </div>
               </div>
             </div>
-            <div className=" h-auto bg-slate-200 rounded-xl mt-2 p-3">
-            <p></p>
-            <p>
-            Welcome to Sheryians Coding School's transformative journey! 🚀 Join us for "7 Days Discipline" where we master JavaScript, cultivate a winning attitude, ace interviews, and shift perspectives. Elevate your coding game and life in just one week! 🌟
-
-            </p>
-            
-            </div>
+           <div><Description/></div>
+            <div className="w-full mt-6"><VideoComments/></div>
           </div>
+         
         </div>
         <div className="cursor-pointer w-[32%] h-auto rounded-2xl mt-[5px]">
 

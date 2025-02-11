@@ -1,0 +1,23 @@
+/* styles.css */
+
+.vertical-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width:80%;
+  }
+  
+  .bullet {
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 5px solid #3e3d3d; /* Adjust the color as needed */
+  }
+  
+  .connector {
+    width:100%;
+    height: 2px; /* Adjust the height of the connector */
+    background-color: #3e3d3d; /* Adjust the color as needed */
+  }
+  
+  

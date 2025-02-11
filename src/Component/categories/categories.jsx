@@ -2,7 +2,9 @@
 import { CategoriesItem } from "../../Data/categories";
 import { useState,useRef,useEffect } from "react";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-const Categories = () => {
+const Categories = ({ 
+  selectedCategory,
+  onSelect,}) => {
   const containerRef = useRef(null);
   const [translate, setTranslate] = useState(0);
   const [isLeftVisible, setIsLeftVisible] = useState(false);
@@ -60,7 +62,11 @@ const Categories = () => {
         {CategoriesItem.map((item, index) => (
           <div
             key={index}
-            className='px-3 py-0 h-[35px] bg-neutral-200 rounded-md text-[13px] font-semibold whitespace-nowrap  transition-transform w-[max-content] hover:bg-neutral-300 cursor-pointer flex items-center justify-center'
+            onClick={() => onSelect(item)}
+           
+            className={`px-3 py-0 h-[35px]  ${selectedCategory === item ? "bg-neutral-900 text-white hover:bg-neutral-900" : "default"}
+             bg-neutral-200 rounded-md text-[13px] font-semibold whitespace-nowrap  transition-transform 
+             w-[max-content] hover:bg-neutral-300 cursor-pointer flex items-center justify-center`}
           >
             {item}
           </div>

@@ -5,7 +5,11 @@ const initialState={
     isSpeechShow:false,
     isSlide:true,
     isVideoSlide:false,
-    channelCategory:'channelHome'
+    channelCategory:'channelHome',
+    isUpload:false,
+    isUploadPage:false,
+    loginStatus:false,
+    
 };
 console.log(initialState,'initial')
 const shortIndexSlice=createSlice({
@@ -29,7 +33,18 @@ const shortIndexSlice=createSlice({
         },
         handleChannelCategory(state,action){
            state.channelCategory=action.payload
+        },
+        handleIsUpload(state){
+            state.isUploade=!state.isUploade
+        },
+        handleIsUploadPage(state){
+            state.isUploadPage=!state.isUploadPage
+        },
+        handleLoginStatus(state,action){
+            state.loginStatus=action.payload
+            
         }
+      
     }
 })
 export default shortIndexSlice.reducer
@@ -39,5 +54,8 @@ export const {
     handleSpeech,
     handleIsSlide,
     handleIsVideoSlide,
-    handleChannelCategory
+    handleChannelCategory,
+    handleIsUpload,
+    handleIsUploadPage,
+    handleLoginStatus
 }=shortIndexSlice.actions
